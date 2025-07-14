@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Missing Person{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-palestine text-white">
+                <h3 class="mb-0">Report Missing Person</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Full Name *</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.age.id_for_label }}" class="form-label">Age *</label>
+                            {{ form.age }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.current_location.id_for_label }}" class="form-label">Last Known Location *</label>
+                        {{ form.current_location }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.father_name.id_for_label }}" class="form-label">Father's Name *</label>
+                            {{ form.father_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.mother_name.id_for_label }}" class="form-label">Mother's Name *</label>
+                            {{ form.mother_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.address.id_for_label }}" class="form-label">Home Address *</label>
+                        {{ form.address }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.photo.id_for_label }}" class="form-label">Photo</label>
+                        {{ form.photo }}
+                        <div class="form-text">Upload a recent photo of the missing person.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.comments.id_for_label }}" class="form-label">Additional Information</label>
+                        {{ form.comments }}
+                        <div class="form-text">Please provide any additional details about the circumstances of disappearance, physical description, etc.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-palestine">Submit Report</button>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

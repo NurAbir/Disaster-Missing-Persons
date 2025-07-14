@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="hero-section text-center mb-5">
+            <h1 class="display-4 text-palestine">Missing Persons Registry</h1>
+            <p class="lead">Help us find missing people in our community</p>
+            <a href="{% url 'add_missing_person' %}" class="btn btn-palestine btn-lg">Report Missing Person</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Recent Missing Persons</h2>
+        {% if missing_persons %}
+            <div class="row">
+                {% for person in missing_persons %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card missing-card">
+                            {% if person.photo %}
+                                <img src="{{ person.photo.url }}" class="card-img-top" alt="{{ person.name }}">
+                            {% else %}
+                                <div class="card-img-top no-photo d-flex align-items-center justify-content-center">
+                                    <span class="text-muted">No Photo</span>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title text-palestine">{{ person.name }}</h5>
+                                <p class="card-text">
+                                    <strong>Age:</strong> {{ person.age }}<br>
+                                    <strong>Last seen:</strong> {{ person.current_location }}<br>
+                                    <strong>Reported:</strong> {{ person.date_reported|date:"M d, Y" }}
+                                </p>
+                                <a href="{% url 'person_detail' person.pk %}" class="btn btn-outline-palestine">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h4>No missing persons reported yet.</h4>
+                <p>Be the first to report a missing person to help our community.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,166 @@
+:root {
+  --palestine-red: #CE1126;
+  --palestine-red-dark: #A10C1C;
+  --palestine-green: #007A3D;
+  --palestine-green-dark: #005E2F;
+  --palestine-white: #FFFFFF;
+  --palestine-black: #000000;
+  --palestine-gray-bg: #F4F7F6;
+  --palestine-border: #E0E0E0;
+  --palestine-light-gray: #F8F9FA;
+  --palestine-border-muted: #DEE2E6;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  background-color: var(--palestine-gray-bg);
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--palestine-green) 0%, var(--palestine-red) 100%);
+  position: relative;
+  text-align: center;
+  padding: 100px 20px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: var(--palestine-white);
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Buttons */
+.btn-palestine {
+  background-color: var(--palestine-red);
+  color: var(--palestine-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-palestine:hover {
+  background-color: var(--palestine-red-dark);
+}
+
+/* Additional styles from your theme */
+.text-palestine {
+  color: var(--palestine-white) !important;
+}
+
+.bg-palestine {
+  background-color: var(--palestine-green) !important;
+  color: var(--palestine-white);
+}
+
+.btn-outline-palestine {
+  background: transparent;
+  color: var(--palestine-green);
+  border: 2px solid var(--palestine-green);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-palestine:hover {
+  background-color: var(--palestine-green);
+  color: var(--palestine-white);
+}
+
+.missing-card {
+  background: var(--palestine-white);
+  border: 1px solid var(--palestine-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.missing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.no-photo,
+.no-photo-large {
+  background-color: var(--palestine-light-gray);
+  border: 2px dashed var(--palestine-border-muted);
+}
+
+.no-photo {
+  height: 200px;
+}
+
+.no-photo-large {
+  height: 400px;
+}
+
+.form-control:focus {
+  border-color: var(--palestine-green);
+  box-shadow: 0 0 0 0.2rem rgba(0, 122, 61, 0.25);
+}
+
+.alert-success {
+  background-color: rgba(0, 122, 61, 0.1);
+  border-color: var(--palestine-green);
+  color: var(--palestine-green);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: var(--palestine-green);
+  text-decoration: none;
+}
+
+footer {
+  background: var(--palestine-green);
+  color: var(--palestine-white);
+  text-align: center;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.card-header,
+.display-4 {
+  font-weight: 700;
+}
+
+.display-4 {
+  font-size: 2.5rem;
+}

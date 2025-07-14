@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ person.name }} - Missing Person{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        {% if person.photo %}
+            <img src="{{ person.photo.url }}" class="img-fluid rounded" alt="{{ person.name }}">
+        {% else %}
+            <div class="no-photo-large d-flex align-items-center justify-content-center rounded">
+                <span class="text-muted">No Photo Available</span>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-palestine text-white">
+                <h2 class="mb-0">{{ person.name }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Age:</strong> {{ person.age }}</p>
+                        <p><strong>Father's Name:</strong> {{ person.father_name }}</p>
+                        <p><strong>Mother's Name:</strong> {{ person.mother_name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Last Known Location:</strong> {{ person.current_location }}</p>
+                        <p><strong>Date Reported:</strong> {{ person.date_reported|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+                
+                <h5 class="mt-4">Home Address</h5>
+                <p>{{ person.address }}</p>
+                
+                {% if person.comments %}
+                    <h5 class="mt-4">Additional Information</h5>
+                    <p>{{ person.comments|linebreaks }}</p>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-outline-palestine">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
