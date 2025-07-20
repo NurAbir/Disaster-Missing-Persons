@@ -4,61 +4,214 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div class="card">
             <div class="card-header bg-palestine text-white">
                 <h3 class="mb-0">Report Missing Person</h3>
             </div>
             <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.name.id_for_label }}" class="form-label">Full Name *</label>
-                            {{ form.name }}
+                    
+                    <!-- Basic Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-palestine border-bottom pb-2">Basic Information</h5>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.age.id_for_label }}" class="form-label">Age *</label>
-                            {{ form.age }}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Full Name *</label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger">{{ form.name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="{{ form.age.id_for_label }}" class="form-label">Age *</label>
+                                {{ form.age }}
+                                {% if form.age.errors %}
+                                    <div class="text-danger">{{ form.age.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                                {{ form.gender }}
+                                {% if form.gender.errors %}
+                                    <div class="text-danger">{{ form.gender.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.current_location.id_for_label }}" class="form-label">Last Known Location *</label>
-                        {{ form.current_location }}
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.father_name.id_for_label }}" class="form-label">Father's Name *</label>
-                            {{ form.father_name }}
+
+                    <!-- Location Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-palestine border-bottom pb-2">Location Information</h5>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.mother_name.id_for_label }}" class="form-label">Mother's Name *</label>
-                            {{ form.mother_name }}
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.current_location.id_for_label }}" class="form-label">Current/Last Known Location *</label>
+                                {{ form.current_location }}
+                                {% if form.current_location.errors %}
+                                    <div class="text-danger">{{ form.current_location.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.last_seen_location.id_for_label }}" class="form-label">Last Seen Location</label>
+                                {{ form.last_seen_location }}
+                                {% if form.last_seen_location.errors %}
+                                    <div class="text-danger">{{ form.last_seen_location.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.last_seen_date.id_for_label }}" class="form-label">Last Seen Date</label>
+                                {{ form.last_seen_date }}
+                                {% if form.last_seen_date.errors %}
+                                    <div class="text-danger">{{ form.last_seen_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.address.id_for_label }}" class="form-label">Home Address *</label>
+                                {{ form.address }}
+                                {% if form.address.errors %}
+                                    <div class="text-danger">{{ form.address.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.address.id_for_label }}" class="form-label">Home Address *</label>
-                        {{ form.address }}
+
+                    <!-- Family Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-palestine border-bottom pb-2">Family Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.father_name.id_for_label }}" class="form-label">Father's Name *</label>
+                                {{ form.father_name }}
+                                {% if form.father_name.errors %}
+                                    <div class="text-danger">{{ form.father_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.mother_name.id_for_label }}" class="form-label">Mother's Name *</label>
+                                {{ form.mother_name }}
+                                {% if form.mother_name.errors %}
+                                    <div class="text-danger">{{ form.mother_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.family_contact.id_for_label }}" class="form-label">Family Contact Person</label>
+                                {{ form.family_contact }}
+                                {% if form.family_contact.errors %}
+                                    <div class="text-danger">{{ form.family_contact.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.family_phone.id_for_label }}" class="form-label">Family Phone Number</label>
+                                {{ form.family_phone }}
+                                {% if form.family_phone.errors %}
+                                    <div class="text-danger">{{ form.family_phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.photo.id_for_label }}" class="form-label">Photo</label>
-                        {{ form.photo }}
-                        <div class="form-text">Upload a recent photo of the missing person.</div>
+
+                    <!-- Case Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-palestine border-bottom pb-2">Case Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.status.id_for_label }}" class="form-label">Current Status</label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    <div class="text-danger">{{ form.status.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.priority.id_for_label }}" class="form-label">Priority Level</label>
+                                {{ form.priority }}
+                                {% if form.priority.errors %}
+                                    <div class="text-danger">{{ form.priority.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.comments.id_for_label }}" class="form-label">Additional Information</label>
-                        {{ form.comments }}
-                        <div class="form-text">Please provide any additional details about the circumstances of disappearance, physical description, etc.</div>
+
+                    <!-- Additional Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-palestine border-bottom pb-2">Additional Information</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.medical_info.id_for_label }}" class="form-label">Medical Information</label>
+                                {{ form.medical_info }}
+                                {% if form.medical_info.errors %}
+                                    <div class="text-danger">{{ form.medical_info.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.identification_docs.id_for_label }}" class="form-label">Identification Documents</label>
+                                {{ form.identification_docs }}
+                                {% if form.identification_docs.errors %}
+                                    <div class="text-danger">{{ form.identification_docs.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label for="{{ form.comments.id_for_label }}" class="form-label">Additional Comments</label>
+                                {{ form.comments }}
+                                {% if form.comments.errors %}
+                                    <div class="text-danger">{{ form.comments.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="d-grid gap-2">
+
+                    <!-- Photo Upload -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-palestine border-bottom pb-2">Photo</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.photo.id_for_label }}" class="form-label">Upload Photo</label>
+                                {{ form.photo }}
+                                {% if form.photo.errors %}
+                                    <div class="text-danger">{{ form.photo.errors }}</div>
+                                {% endif %}
+                                <div class="form-text">Upload a clear photo of the missing person if available.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
                         <button type="submit" class="btn btn-palestine">Submit Report</button>
-                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancel</a>
                     </div>
                 </form>
             </div>
