@@ -1,50 +1,148 @@
 {% extends 'base.html' %}
 
+{% block title %}Missing Persons Registry - Home{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="hero-section text-center mb-5">
-            <h1 class="display-4 text-palestine">Missing Persons Registry</h1>
-            <p class="lead">Help us find missing people in our community</p>
-            <a href="{% url 'add_missing_person' %}" class="btn btn-palestine btn-lg">Report Missing Person</a>
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Missing Persons Registry</h1>
+        <p>Help us find and reunite families with their loved ones</p>
+        <a href="{% url 'add_missing_person' %}" class="btn btn-palestine">Report Missing Person</a>
+    </div>
+</div>
+
+<!-- Statistics Dashboard -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Cases</h5>
+                <h2>{{ total_cases }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-white">
+            <div class="card-body">
+                <h5 class="card-title">Still Missing</h5>
+                <h2>{{ missing_cases }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Found</h5>
+                <h2>{{ found_cases }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-danger text-white">
+            <div class="card-body">
+                <h5 class="card-title">Urgent Cases</h5>
+                <h2>{{ urgent_cases }}</h2>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="mb-4">Recent Missing Persons</h2>
-        {% if missing_persons %}
+<!-- Search and Filter Section -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Search & Filter Cases</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{% url 'home' %}">
             <div class="row">
-                {% for person in missing_persons %}
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card missing-card">
-                            {% if person.photo %}
-                                <img src="{{ person.photo.url }}" class="card-img-top" alt="{{ person.name }}">
-                            {% else %}
-                                <div class="card-img-top no-photo d-flex align-items-center justify-content-center">
-                                    <span class="text-muted">No Photo</span>
-                                </div>
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title text-palestine">{{ person.name }}</h5>
-                                <p class="card-text">
-                                    <strong>Age:</strong> {{ person.age }}<br>
-                                    <strong>Last seen:</strong> {{ person.current_location }}<br>
-                                    <strong>Reported:</strong> {{ person.date_reported|date:"M d, Y" }}
-                                </p>
-                                <a href="{% url 'person_detail' person.pk %}" class="btn btn-outline-palestine">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, case number, location..." value="{{ search_query }}">
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-control">
+                        <option value="">All Status</option>
+                        <option value="missing" {% if status_filter == 'missing' %}selected{% endif %}>Missing</option>
+                        <option value="found" {% if status_filter == 'found' %}selected{% endif %}>Found</option>
+                        <option value="deceased" {% if status_filter == 'deceased' %}selected{% endif %}>Deceased</option>
+                        <option value="safe" {% if status_filter == 'safe' %}selected{% endif %}>Safe</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="priority" class="form-control">
+                        <option value="">All Priority</option>
+                        <option value="urgent" {% if priority_filter == 'urgent' %}selected{% endif %}>Urgent</option>
+                        <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>High</option>
+                        <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Medium</option>
+                        <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Low</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-palestine w-100">Search</button>
+                </div>
+                <div class="col-md-2">
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary w-100">Clear</a>
+                </div>
             </div>
-        {% else %}
-            <div class="alert alert-info">
-                <h4>No missing persons reported yet.</h4>
-                <p>Be the first to report a missing person to help our community.</p>
-            </div>
-        {% endif %}
+        </form>
     </div>
 </div>
+
+<!-- Cases List -->
+<div class="row">
+    {% for person in missing_persons %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card missing-card h-100">
+            {% if person.photo %}
+                <img src="{{ person.photo.url }}" class="card-img-top" alt="{{ person.name }}">
+            {% else %}
+                <div class="card-img-top no-photo d-flex align-items-center justify-content-center">
+                    <i class="fas fa-user fa-3x text-muted"></i>
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0">{{ person.name }}</h6>
+                    <span class="badge {% if person.status == 'missing' %}bg-warning{% elif person.status == 'found' %}bg-success{% elif person.status == 'deceased' %}bg-danger{% else %}bg-info{% endif %}">
+                        {{ person.status|title }}
+                    </span>
+                </div>
+                <p class="card-text">
+                    <small class="text-muted">
+                        <strong>Case:</strong> {{ person.case_number|default:"No Case Number" }}<br>
+                        <strong>Age:</strong> {{ person.age }} years<br>
+                        <strong>Location:</strong> {{ person.current_location }}<br>
+                        <strong>Priority:</strong> 
+                        <span class="badge {% if person.priority == 'urgent' %}bg-danger{% elif person.priority == 'high' %}bg-warning{% elif person.priority == 'medium' %}bg-info{% else %}bg-secondary{% endif %}">
+                            {{ person.priority|title }}
+                        </span>
+                    </small>
+                </p>
+                <a href="{% url 'person_detail' person.pk %}" class="btn btn-outline-palestine btn-sm">View Details</a>
+            </div>
+            <div class="card-footer text-muted">
+                <small>Reported: {{ person.date_reported|date:"M d, Y" }}</small>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4>No cases found</h4>
+            <p class="text-muted">Try adjusting your search criteria or <a href="{% url 'add_missing_person' %}">report a missing person</a>.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination or Load More -->
+{% if missing_persons|length == 20 %}
+<div class="text-center mt-4">
+    <a href="{% url 'home' %}?{% if search_query %}search={{ search_query }}&{% endif %}{% if status_filter %}status={{ status_filter }}&{% endif %}{% if priority_filter %}priority={{ priority_filter }}{% endif %}" class="btn btn-outline-palestine">
+        View All Cases
+    </a>
+</div>
+{% endif %}
 {% endblock %}
