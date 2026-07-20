@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Missing Persons Reports{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Missing Persons Reports</h1>
+    <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search by name..." onkeyup="debounceSearch()">
+        <label><input type="checkbox" id="urgentFilter" onchange="loadReports()"> Urgent Only</label>
+        <select id="statusFilter" onchange="loadReports()">
+            <option value="">All Active</option>
+            <option value="active">Active</option>
+            <option value="found">Found</option>
+        </select>
+    </div>
+</div>
+<div id="reportsList" class="reports-grid">
+    <div class="loading">Loading reports...</div>
+</div>
+<div id="loadMore" class="center" style="display:none;">
+    <button class="btn btn-secondary" onclick="loadMore()">Load More</button>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let skip = 0, limit = 12, currentSearch = '';
+function debounceSearch() {
+    clearTimeout(window.searchTimeout);
+    window.searchTimeout = setTimeout(() => {
+        skip = 0; currentSearch = document.getElementById('searchInput').value;
+        loadReports();
+    }, 300);
+}
+async function loadReports() {
+    const urgent = document.getElementById('urgentFilter').checked;
+    const status = document.getElementById('statusFilter').value;
+    let url = `/api/reports/?skip=${skip}&limit=${limit}`;
+    if (urgent) url += '&urgent_only=true';
+    if (status) url += `&status=${status}`;
+    if (currentSearch) url += `&search=${encodeURIComponent(currentSearch)}`;
+    try {
+        const res = await apiFetch(url);
+        const reports = await res.json();
+        const container = document.getElementById('reportsList');
+        if (skip === 0) container.innerHTML = '';
+        if (reports.length === 0 && skip === 0) {
+            container.innerHTML = '<p class="empty">No reports found</p>';
+        } else {
+            reports.forEach(r => container.innerHTML += createReportCard(r));
+        }
+        document.getElementById('loadMore').style.display = reports.length === limit ? 'block' : 'none';
+    } catch (e) { showToast('Failed to load reports', 'error'); }
+}
+function loadMore() { skip += limit; loadReports(); }
+document.addEventListener('DOMContentLoaded', loadReports);
+</script>
+{% endblock %}

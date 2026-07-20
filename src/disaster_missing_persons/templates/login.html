@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <h1>Login</h1>
+    <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+            <label>Username or Email</label>
+            <input type="text" id="username" required autofocus>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-large">Login</button>
+    </form>
+    <p class="auth-link">Don't have an account? <a href="/register">Register</a></p>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function handleLogin(e) {
+    e.preventDefault();
+    const data = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+    };
+    try {
+        const res = await apiFetch('/api/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        if (res.ok) {
+            const result = await res.json();
+            localStorage.setItem('token', result.access_token);
+            showToast('Login successful!', 'success');
+            setTimeout(() => window.location.href = '/', 500);
+        } else {
+            const err = await res.json();
+            showToast(err.detail || 'Login failed', 'error');
+        }
+    } catch (e) { showToast(e.message || 'Network error', 'error'); console.error(e); }
+}
+</script>
+{% endblock %}

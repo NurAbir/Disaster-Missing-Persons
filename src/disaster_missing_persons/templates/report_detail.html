@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}Report Details{% endblock %}
+{% block content %}
+<div id="reportDetail"><div class="loading">Loading report...</div></div>
+<div id="tipSection" style="display:none;" class="tip-form-card">
+    <h3>SUBMIT A TIP</h3>
+    <form id="tipForm" onsubmit="submitTip(event)">
+        <div class="form-group">
+            <textarea id="tipMessage" required minlength="10" rows="4" placeholder="Describe what you know about this person's whereabouts, when and where you saw them, what they were doing..."></textarea>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <input type="tel" id="tipPhone" placeholder="Your phone (optional)">
+            </div>
+            <div class="form-group">
+                <input type="email" id="tipEmail" placeholder="Your email (optional)">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Tip</button>
+    </form>
+</div>
+
+<div id="statusSection" style="display:none;" class="status-change-card">
+    <h3>UPDATE STATUS</h3>
+    <p class="subtitle">Only the rescuer who created this report or an admin can change the status.</p>
+    <div class="status-buttons">
+        <button class="btn status-btn" onclick="updateStatus('active')">Mark Active</button>
+        <button class="btn status-btn found" onclick="updateStatus('found')">Mark Found</button>
+        <button class="btn status-btn closed" onclick="updateStatus('closed')">Mark Closed</button>
+    </div>
+</div>
+<div id="tipsList" style="display:none;">
+    <h3>Tips Received</h3>
+    <div id="tipsContainer"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const reportId = '{{ report_id }}';
+async function loadReport() {
+    try {
+        const res = await apiFetch(`/api/reports/${reportId}`);
+        if (!res.ok) throw new Error('Not found');
+        const report = await res.json();
+        document.getElementById('reportDetail').innerHTML = `
+            <div class="report-detail ${report.is_urgent ? 'urgent' : ''}">
+                ${report.is_urgent ? '<div class="urgent-badge">URGENT</div>' : ''}
+                <div class="report-photos">
+                    ${report.photos.map(p => `<img src="${p}" class="report-photo">`).join('')}
+                </div>
+                <div class="report-info">
+                    <h1>${report.full_name}</h1>
+                    <div class="report-meta">
+                        <span class="status status-${report.status}">${report.status}</span>
+                        <span>Age: ${report.age || 'Unknown'}</span>
+                        <span>Gender: ${report.gender}</span>
+                    </div>
+                    <div class="info-section">
+                        <h4>Last Seen</h4>
+                        <p><strong>Location:</strong> ${report.last_seen_location.address || 'Not specified'}</p>
+                        <p><strong>Time:</strong> ${new Date(report.last_seen_datetime).toLocaleString()}</p>
+                    </div>
+                    ${report.clothing_description ? `<div class="info-section"><h4>Clothing</h4><p>${report.clothing_description}</p></div>` : ''}
+                    ${report.distinguishing_features ? `<div class="info-section"><h4>Distinguishing Features</h4><p>${report.distinguishing_features}</p></div>` : ''}
+                    ${report.medical_conditions ? `<div class="info-section"><h4>Medical Conditions</h4><p>${report.medical_conditions}</p></div>` : ''}
+                    <div class="info-section">
+                        <h4>Contact</h4>
+                        <p><strong>Phone:</strong> <a href="tel:${report.contact_phone}">${report.contact_phone}</a></p>
+                        ${report.contact_email ? `<p><strong>Email:</strong> <a href="mailto:${report.contact_email}">${report.contact_email}</a></p>` : ''}
+                    </div>
+                    <div class="report-footer">
+                        <p>Reported by: ${report.rescuer_name}</p>
+                        <p>Posted: ${new Date(report.created_at).toLocaleString()}</p>
+                    </div>
+                </div>
+            </div>`;
+        const token = localStorage.getItem('token');
+        if (token && report.status === 'active') document.getElementById('tipSection').style.display = 'block';
+        const user = getUserFromToken();
+        console.log('User from token:', JSON.stringify(user));
+
+        // Any rescuer or admin can manage any report
+        let canManage = false;
+        if (user) {
+            canManage = (user.role === 'admin' || user.role === 'rescuer');
+        }
+        console.log('Can manage:', canManage);
+
+        if (canManage) {
+            loadTips();
+            const statusSection = document.getElementById('statusSection');
+            if (statusSection) statusSection.style.display = 'block';
+        }
+    } catch (e) {
+        document.getElementById('reportDetail').innerHTML = '<p class="error">Report not found</p>';
+    }
+}
+async function submitTip(e) {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (!token) { showToast('Please login to submit a tip', 'error'); return; }
+    const data = {
+        report_id: reportId,
+        message: document.getElementById('tipMessage').value,
+        contact_phone: document.getElementById('tipPhone').value || null,
+        contact_email: document.getElementById('tipEmail').value || null
+    };
+    try {
+        const res = await apiFetch(`/api/reports/${reportId}/tips`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            body: JSON.stringify(data)
+        });
+        if (res.ok) { showToast('Tip submitted!', 'success'); document.getElementById('tipForm').reset(); }
+        else { const err = await res.json(); showToast(err.detail || 'Failed', 'error'); }
+    } catch (e) { showToast(e.message || 'Network error', 'error'); console.error(e); }
+}
+async function loadTips() {
+    const token = localStorage.getItem('token');
+    try {
+        const res = await apiFetch(`/api/reports/${reportId}/tips`, {headers: {'Authorization': `Bearer ${token}`}});
+        if (res.ok) {
+            const tips = await res.json();
+            document.getElementById('tipsList').style.display = 'block';
+            document.getElementById('tipsContainer').innerHTML = tips.map(t => `
+                <div class="tip-card ${t.is_read ? 'read' : 'unread'}">
+                    <p>${t.message}</p>
+                    <div class="tip-meta">
+                        <span>From: ${t.user_name || 'Anonymous'}</span>
+                        <span>${new Date(t.created_at).toLocaleString()}</span>
+                    </div>
+                    ${t.contact_phone ? `<p>Phone: ${t.contact_phone}</p>` : ''}
+                </div>
+            `).join('');
+        }
+    } catch (e) {}
+}
+
+async function updateStatus(newStatus) {
+    const token = localStorage.getItem('token');
+    if (!token) { showToast('Please login', 'error'); return; }
+
+    try {
+        const res = await apiFetch(`/api/reports/${reportId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({status: newStatus})
+        });
+        const result = await res.json();
+        showToast(result.message || 'Status updated', 'success');
+        setTimeout(() => loadReport(), 500);
+    } catch (e) {
+        showToast(e.message || 'Failed to update status', 'error');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadReport);
+</script>
+{% endblock %}

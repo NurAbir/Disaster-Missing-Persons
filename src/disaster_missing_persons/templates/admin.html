@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Admin Dashboard</h1></div>
+<div class="admin-tabs">
+    <button class="tab-btn active" onclick="showTab('stats', this)">Statistics</button>
+    <button class="tab-btn" onclick="showTab('rescuers', this)">Rescuers</button>
+    <button class="tab-btn" onclick="showTab('create-rescuer', this)">Create Rescuer</button>
+</div>
+<div id="stats-tab" class="tab-content active">
+    <div class="stats-grid" id="adminStats"></div>
+</div>
+<div id="rescuers-tab" class="tab-content">
+    <div id="rescuersList"></div>
+</div>
+<div id="create-rescuer-tab" class="tab-content">
+    <h3>Create New Rescuer</h3>
+    <form onsubmit="createRescuer(event)">
+        <div class="form-grid">
+            <div class="form-group"><label>Full Name *</label><input type="text" id="rFullName" required></div>
+            <div class="form-group"><label>Username *</label><input type="text" id="rUsername" required></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="rEmail" required></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="rPhone"></div>
+            <div class="form-group"><label>Organization</label><input type="text" id="rOrg"></div>
+            <div class="form-group"><label>Password *</label><input type="password" id="rPassword" required minlength="6"></div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Rescuer</button>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function showTab(tab, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    document.getElementById(tab + '-tab').classList.add('active');
+    btn.classList.add('active');
+    if (tab === 'stats') loadStats();
+    if (tab === 'rescuers') loadRescuers();
+}
+async function loadStats() {
+    const token = localStorage.getItem('token');
+    try {
+        const res = await apiFetch('/api/admin/stats', {headers: {'Authorization': `Bearer ${token}`}});
+        const stats = await res.json();
+        document.getElementById('adminStats').innerHTML = `
+            <div class="stat-card"><div class="stat-number">${stats.total_reports}</div><div class="stat-label">Total</div></div>
+            <div class="stat-card"><div class="stat-number">${stats.active_reports}</div><div class="stat-label">Active</div></div>
+            <div class="stat-card"><div class="stat-number">${stats.found_persons}</div><div class="stat-label">Found</div></div>
+            <div class="stat-card"><div class="stat-number">${stats.total_tips}</div><div class="stat-label">Tips</div></div>
+            <div class="stat-card urgent"><div class="stat-number">${stats.urgent_reports}</div><div class="stat-label">Urgent</div></div>`;
+    } catch (e) {}
+}
+async function loadRescuers() {
+    const token = localStorage.getItem('token');
+    try {
+        const res = await apiFetch('/api/admin/rescuers', {headers: {'Authorization': `Bearer ${token}`}});
+        const rescuers = await res.json();
+        document.getElementById('rescuersList').innerHTML = rescuers.map(r => `
+            <div class="rescuer-card">
+                <h4>${r.full_name}</h4>
+                <p>${r.email} | ${r.username}</p>
+                <p>${r.organization || 'No organization'}</p>
+                <span class="badge ${r.is_active ? 'active' : 'inactive'}">${r.is_active ? 'Active' : 'Inactive'}</span>
+            </div>`).join('');
+    } catch (e) {}
+}
+async function createRescuer(e) {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const data = {
+        full_name: document.getElementById('rFullName').value,
+        username: document.getElementById('rUsername').value,
+        email: document.getElementById('rEmail').value,
+        phone: document.getElementById('rPhone').value || null,
+        organization: document.getElementById('rOrg').value || null,
+        password: document.getElementById('rPassword').value
+    };
+    try {
+        const res = await apiFetch('/api/admin/create-rescuer', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            body: JSON.stringify(data)
+        });
+        if (res.ok) { showToast('Rescuer created!', 'success'); e.target.reset(); }
+        else { const err = await res.json(); showToast(err.detail || 'Failed', 'error'); }
+    } catch (e) { showToast(e.message || 'Network error', 'error'); console.error(e); }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const user = getUserFromToken();
+    if (!user || user.role !== 'admin') {
+        showToast('Admin access required', 'error');
+        setTimeout(() => window.location.href = '/', 1500);
+        return;
+    }
+    loadStats();
+});
+</script>
+{% endblock %}

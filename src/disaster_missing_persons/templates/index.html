@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>MISSING PERSONS REGISTRY</h1>
+    <p class="hero-subtitle">Help reunite families during disasters</p>
+    <div class="hero-actions">
+        <a href="/reports" class="btn btn-primary btn-large">View Missing Persons</a>
+        <a href="/register" class="btn btn-secondary btn-large">Create Account</a>
+    </div>
+</div>
+
+<div class="stats-grid" id="statsGrid">
+    <div class="stat-card">
+        <div class="stat-number" id="activeCount">-</div>
+        <div class="stat-label">Active Cases</div>
+    </div>
+    <div class="stat-card urgent">
+        <div class="stat-number" id="urgentCount">-</div>
+        <div class="stat-label">Urgent</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-number" id="foundCount">-</div>
+        <div class="stat-label">Found</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number" id="tipsCount">-</div>
+        <div class="stat-label">Tips Received</div>
+    </div>
+</div>
+
+<div class="recent-reports">
+    <h2>Recent Reports</h2>
+    <div id="recentReports" class="reports-grid">
+        <div class="loading">Loading...</div>
+    </div>
+    <div class="center">
+        <a href="/reports" class="btn btn-primary">View All Reports</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await apiFetch('/api/reports/stats');
+        if (res.ok) {
+            const stats = await res.json();
+            document.getElementById('activeCount').textContent = stats.active_reports;
+            document.getElementById('urgentCount').textContent = stats.urgent_reports;
+            document.getElementById('foundCount').textContent = stats.found_persons;
+            document.getElementById('tipsCount').textContent = stats.total_tips;
+        }
+    } catch (e) {}
+
+    try {
+        const res = await apiFetch('/api/reports/?limit=6');
+        const reports = await res.json();
+        const container = document.getElementById('recentReports');
+        container.innerHTML = reports.map(r => createReportCard(r)).join('');
+    } catch (e) {
+        document.getElementById('recentReports').innerHTML = '<p class="error">Failed to load reports</p>';
+    }
+});
+</script>
+{% endblock %}

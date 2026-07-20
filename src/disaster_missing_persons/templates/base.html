@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Disaster Missing Persons{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/"><span>MISSING</span> PERSONS</a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="/reports">View Reports</a>
+            <a href="/create-report" id="createReportLink" style="display:none;">Create Report</a>
+            <a href="/admin" id="adminLink" style="display:none;">Admin</a>
+            <a href="/login" id="loginLink">Login</a>
+            <a href="/register" id="registerLink">Register</a>
+            <span id="userInfo" style="display:none;"></span>
+            <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
+        </div>
+        <button class="nav-toggle" onclick="toggleNav()">☰</button>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
