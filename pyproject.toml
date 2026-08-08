@@ -41,6 +41,12 @@ dependencies = [
     "email-validator>=2.1.0,<3.0.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/NurAbir/Disaster-Missing-Persons"
+Repository = "https://github.com/NurAbir/Disaster-Missing-Persons"
+Issues = "https://github.com/NurAbir/Disaster-Missing-Persons/issues"
+Changelog = "https://github.com/NurAbir/Disaster-Missing-Persons/blob/main/CHANGELOG.md"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",

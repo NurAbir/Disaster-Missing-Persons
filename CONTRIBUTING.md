@@ -6,8 +6,8 @@ Thanks for your interest in improving this project. It exists to help disaster r
 
 1. Fork the repository and clone your fork:
    ```bash
-   git clone https://github.com/<your-username>/disaster-missing-persons.git
-   cd disaster-missing-persons
+   git clone https://github.com/<your-username>/Disaster-Missing-Persons.git
+   cd Disaster-Missing-Persons
    ```
 2. Create a virtual environment and install with dev dependencies:
    ```bash
@@ -15,7 +15,7 @@ Thanks for your interest in improving this project. It exists to help disaster r
    source venv/bin/activate  # venv\Scripts\Activate.ps1 on Windows
    pip install -e ".[dev]"
    ```
-3. Copy the environment template and point it at a local MongoDB instance:
+3. Copy the environment template and point it at a local MongoDB instance (see [docs/MONGODB_GUIDE.md](docs/MONGODB_GUIDE.md) if you need help getting MongoDB running):
    ```bash
    cp .env.example .env
    ```
@@ -29,7 +29,7 @@ Thanks for your interest in improving this project. It exists to help disaster r
 - Create a branch off `main` named `fix/...`, `feat/...`, or `docs/...` depending on the change.
 - Keep pull requests focused on a single change; smaller PRs are reviewed faster.
 - Add or update tests in `tests/` for any behavior change.
-- Update `README.md` or `docs/USERMANUAL.md` if your change affects setup, configuration, or user-facing behavior.
+- Update `README.md`, `docs/USERMANUAL.md`, or `docs/MONGODB_GUIDE.md` if your change affects setup, configuration, or user-facing behavior.
 
 ## Code Style
 

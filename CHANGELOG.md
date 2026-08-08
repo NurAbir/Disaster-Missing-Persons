@@ -7,14 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- MongoDB setup guide (`docs/MONGODB_GUIDE.md`) covering local install, Docker, Atlas, indexes, backup/restore, and troubleshooting.
+
+### Changed
+- Repository renamed from `disaster-missing-persons` to `Disaster-Missing-Persons`; updated all repo links accordingly.
+- Frontend UX improvements across report creation and listing pages.
+
 ### Fixed
 - Fixed a dead API router that prevented some endpoints from being registered.
 - Fixed a path traversal vulnerability in photo upload/serving.
 - Fixed incorrect report status scoring logic.
 - Fixed false-positive matches in AI-generated phrase detection.
-
-### Changed
-- Frontend UX improvements across report creation and listing pages.
 
 ## [1.0.0] - 2026-05-01
 
@@ -26,5 +30,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-expiring reports (default 30 days) and urgent-case flagging.
 - Public statistics dashboard and Swagger/ReDoc API documentation.
 
-[Unreleased]: https://github.com/NurAbir/disaster-missing-persons/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/NurAbir/disaster-missing-persons/releases/tag/v1.0.0
+[Unreleased]: https://github.com/NurAbir/Disaster-Missing-Persons/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/NurAbir/Disaster-Missing-Persons/releases/tag/v1.0.0

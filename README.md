@@ -23,7 +23,7 @@ A lightweight, fast, and reliable missing person reporting system designed for d
 ### Prerequisites
 
 - Python 3.10+
-- MongoDB 5.0+ (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
+- MongoDB 5.0+ (local or [MongoDB Atlas](https://www.mongodb.com/atlas)) — see [docs/MONGODB_GUIDE.md](docs/MONGODB_GUIDE.md) for install, Docker, Atlas, and troubleshooting
 
 ---
 
@@ -31,8 +31,8 @@ A lightweight, fast, and reliable missing person reporting system designed for d
 
 ```powershell
 # 1. Clone the repository
-git clone https://github.com/NurAbir/disaster-missing-persons.git
-cd disaster-missing-persons
+git clone https://github.com/NurAbir/Disaster-Missing-Persons.git
+cd Disaster-Missing-Persons
 
 # 2. Create virtual environment
 python -m venv venv
@@ -61,8 +61,8 @@ python -m disaster_missing_persons
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/NurAbir/disaster-missing-persons.git
-cd disaster-missing-persons
+git clone https://github.com/NurAbir/Disaster-Missing-Persons.git
+cd Disaster-Missing-Persons
 
 # 2. Create virtual environment
 python3 -m venv venv
@@ -187,7 +187,8 @@ Disaster Missing Persons/
 │   └── __main__.py              # CLI entry point
 ├── tests/                       # Test suite
 ├── docs/
-│   └── USERMANUAL.md            # User manual
+│   ├── USERMANUAL.md            # User manual
+│   └── MONGODB_GUIDE.md         # MongoDB setup, indexes, backup & troubleshooting
 ├── .github/
 │   ├── workflows/ci.yml         # CI: lint, type-check, tests
 │   ├── ISSUE_TEMPLATE/          # Bug report / feature request templates
@@ -301,6 +302,7 @@ pip install --upgrade passlib bcrypt
 ### MongoDB connection refused
 - Make sure MongoDB is running: `mongod` (or `sudo systemctl start mongod` on Linux)
 - Check your `MONGODB_URL` in `.env`
+- See [docs/MONGODB_GUIDE.md](docs/MONGODB_GUIDE.md) for a full setup and troubleshooting guide
 
 ### Port already in use
 Change the port in `.env`: `PORT=8001`
